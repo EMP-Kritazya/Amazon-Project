@@ -24,4 +24,12 @@ const userSchema = new mongoose.Schema(
   },
 );
 
+// before saving,
+userSchema.pre("save", async function () {
+  if (!/^\S+@\S+\.\S+$/.test(this.email)) {
+    return next(new Error("Invalid Email Format"));
+  }
+  this.email = this.email.toLowerCase();
+});
+
 export const User = mongoose.model("User", userSchema);
