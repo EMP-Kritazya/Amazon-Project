@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amazon</title>
+    <link rel="stylesheet" href="styles/shared/general.css" />
+    <link rel="stylesheet" href="styles/pages/index.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <img
+        src="images/amazon-logo-black.png"
+        alt=""
+        class="amazon-logo index-logo"
+      />
+      <img
+        src="images/amazon-mobile-logo-black.png"
+        alt=""
+        class="amazon-mobile-logo index-m-logo"
+      />
+    </header>
+    <section>
+      <form class="form">
+        <h2>Sign In</h2>
+        <div class="field">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            required
+            placeholder="example123"
+          />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            required
+            placeholder="example@email.com"
+          />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" required />
+        </div>
+
+        <button type="submit">Sign In</button>
+
+        <div class="divider">OR</div>
+
+        <div class="login-field">
+          <div class="left">Already have an account?</div>
+          <div class="right">
+            <a href="/login.html">Login</a>
+          </div>
+        </div>
+      </form>
+    </section>
+  </body>
+</html>

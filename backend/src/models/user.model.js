@@ -24,6 +24,8 @@ const userSchema = new mongoose.Schema(
       minLength: 6,
       maxLength: 50,
     },
+    authenticated: Boolean,
+    loggedIn: Boolean,
   },
   {
     timestamps: true,

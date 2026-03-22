@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  authMiddelware,
+  loginPage,
   loginUser,
   registerUser,
   reset,
@@ -8,7 +10,7 @@ import {
 const router = Router();
 
 router.post("/login", loginUser);
-// router.get("/login", loginPage);
+router.get("/login", authMiddelware, loginPage);
 
 router.post("/signup", registerUser);
 // router.get("/signup", registerPage);
