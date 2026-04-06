@@ -1,11 +1,12 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
       required: true,
-      lowerCase: true,
+      lowercase: true,
       trim: true,
       minLength: 3,
       maxLength: 50,
@@ -24,8 +25,6 @@ const userSchema = new mongoose.Schema(
       minLength: 6,
       maxLength: 50,
     },
-    authenticated: Boolean,
-    loggedIn: Boolean,
   },
   {
     timestamps: true,
@@ -33,11 +32,20 @@ const userSchema = new mongoose.Schema(
 );
 
 // before saving,
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function (next) {
   if (!/^\S+@\S+\.\S+$/.test(this.email)) {
-    return next(new Error("Invalid Email Format"));
+    throw new Error("Invalid Email Format");
   }
   this.email = this.email.toLowerCase();
+
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
+
+userSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 export const User = mongoose.model("User", userSchema);

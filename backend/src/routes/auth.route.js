@@ -1,21 +1,28 @@
 import { Router } from "express";
 import {
-  authMiddelware,
+  deleteProfile,
+  homePage,
   loginPage,
   loginUser,
-  registerUser,
-  reset,
-} from "../controllers/auth.controller.js";
+  signup,
+  signupPage,
+} from "../controllers/user.controller.js";
+import {
+  authMiddleware,
+  guestMiddleware,
+} from "../middleware/authController.js";
 
 const router = Router();
 
+router.get("/amazon", authMiddleware, homePage);
+
 router.post("/login", loginUser);
-router.get("/login", authMiddelware, loginPage);
 
-router.post("/signup", registerUser);
-// router.get("/signup", registerPage);
+router.get(["/", "/login"], guestMiddleware, loginPage);
 
-router.post("/reset", reset);
-// router.get("/reset", resetPage);
+router.post("/signup", signup);
+router.get("/signup", signupPage);
+
+router.get("/delete", authMiddleware, deleteProfile);
 
 export default router;
