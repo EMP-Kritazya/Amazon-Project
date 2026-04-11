@@ -15,3 +15,7 @@ document.querySelectorAll("input").forEach((input) => {
     }
   });
 });
+
+document.querySelector(".form").addEventListener("submit", (form) => {
+  const promise = fetch("https://localhost:4000").then((response) => {});
+});
