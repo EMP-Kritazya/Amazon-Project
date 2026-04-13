@@ -11,7 +11,9 @@ app.use(cookieParser());
 
 // routes import
 import authRouter from "./routes/auth.route.js";
+import cartRouter from "./routes/cart.route.js";
 
 app.use("/auth", authRouter);
+app.use("/cart", cartRouter);
 
 export default app;

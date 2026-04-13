@@ -24,7 +24,7 @@ const authMiddleware = async (req, res, next) => {
     if (req.authenticated) {
       return next();
     }
-    const authToken = req.cookies.authToken || req.headers["authToken"];
+    const authToken = req.cookies.authToken;
     if (!authToken) throw new Error("No token found");
     const decodeId = jwt.verify(authToken, process.env.SECRETKEY);
     req.userId = decodeId.id;
@@ -38,6 +38,7 @@ const authMiddleware = async (req, res, next) => {
     return res.redirect(`/auth/login/?msg=${msg}`);
   } catch (error) {
     if (error.message === "No token found") {
+      console.log("Session Expired");
       const msg = encodeURIComponent("session-expired");
       return res.redirect(`/auth/login/?msg=${msg}`);
     }
@@ -63,7 +64,7 @@ const guestMiddleware = async (req, res, next) => {
     const isValid = await authenticateToken(req);
     if (isValid) {
       req.authenticated = true;
-      return res.redirect("/auth/homepage");
+      return res.redirect("/auth/amazon");
     }
     return next();
   } catch (error) {

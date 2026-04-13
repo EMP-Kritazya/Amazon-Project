@@ -2,8 +2,10 @@ import { loggedIn } from "./verify";
 
 let container = document.querySelector(".header");
 
+let rightContent;
+
 if (loggedIn) {
-  let rightContent = `
+  rightContent = `
     <a href="orders.html" class="ro">
       <span class="returns">Returns</span>
       <span class="orders">& Orders</span>
@@ -16,7 +18,7 @@ if (loggedIn) {
     </a>
   `;
 } else {
-  let rightContent = `
+  rightContent = `
     <a href="verify.html" class="verify">
       <span class="login">LogIn</span>
       <span class="signup">SignUp</span>

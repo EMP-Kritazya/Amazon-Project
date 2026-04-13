@@ -1,6 +1,5 @@
 import { addToCart, calculateCartQuantity } from "../../data/cart.js";
 import { products, loadProductsFetch } from "../../data/product.js";
-import { loggedIn } from "./verify.js";
 
 await loadProductsFetch();
 
@@ -79,6 +78,5 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
     addToCart(productId);
     updateCartQuantity(productId);
     generateAddedText(productId);
-    console.log(productId);
   });
 });

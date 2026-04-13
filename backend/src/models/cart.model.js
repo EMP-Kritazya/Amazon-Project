@@ -8,27 +8,23 @@ const cartSchema = new mongoose.Schema(
       required: true,
     },
 
-    id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    image: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    rating: {
-      start: Number,
-      count: Number,
-    },
-    priceCents: Number,
-    keywords: [Number],
+    items: [
+      {
+        id: {
+          type: String,
+          required: true,
+          unique: true,
+        },
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+        deliveryOptionId: {
+          type: Number,
+          default: 1,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

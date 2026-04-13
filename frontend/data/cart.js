@@ -1,15 +1,17 @@
 export let cart;
 
-loadFromStorage();
+loadFromBackend();
 
-export function loadFromStorage() {
+export function loadFromBackend() {
+  // load from backend
+
   cart = JSON.parse(localStorage.getItem("cart")) || [];
 }
 
 // Adds the product to the cart
 // If the product already exists then it will just update it's quantity
 // If not then it will push a new product to the cart
-export function addToCart(productId) {
+export async function addToCart(productId) {
   let matchingItem;
 
   cart.forEach((item) => {
@@ -26,7 +28,18 @@ export function addToCart(productId) {
       deliveryOptionId: "1",
     });
   }
-  saveToStorage();
+
+  const sendCartDetails = await fetch(
+    "http:localhost:4000/auth/cart/addToCart",
+    {
+      method: "POST",
+      credentials: "include",
+      header: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cart),
+    },
+  );
 }
 
 export function removeFromCart(productId) {

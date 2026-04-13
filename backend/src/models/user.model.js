@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // before saving,
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   if (!/^\S+@\S+\.\S+$/.test(this.email)) {
     throw new Error("Invalid Email Format");
   }
@@ -41,7 +41,6 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
 userSchema.methods.comparePassword = async function (password) {
