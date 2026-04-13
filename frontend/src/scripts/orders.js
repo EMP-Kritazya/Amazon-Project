@@ -1,4 +1,4 @@
-import { cart, emptyCart } from "../data/cart.js";
+import { cart, emptyCart } from "../../data/cart.js";
 
 let orders = [];
 

@@ -1,5 +1,6 @@
-import { addToCart, calculateCartQuantity } from "../data/cart.js";
-import { products, loadProductsFetch } from "../data/product.js";
+import { addToCart, calculateCartQuantity } from "../../data/cart.js";
+import { products, loadProductsFetch } from "../../data/product.js";
+import { loggedIn } from "./verify.js";
 
 await loadProductsFetch();
 

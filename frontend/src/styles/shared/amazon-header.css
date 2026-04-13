@@ -79,6 +79,7 @@
 
 .ro {
   margin-right: 14px;
+  display: none;
 }
 
 .ro .returns {
@@ -94,10 +95,28 @@
   font-size: 15px;
 }
 
+.verify {
+  display: flex;
+  margin-right: 14px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.verify .login,
+.verify .signup {
+  color: white;
+  font-weight: 700;
+}
+
+.login {
+  margin-right: 5px;
+}
+
 .cart {
   position: relative;
   display: flex;
   align-items: center;
+  display: none;
 }
 
 .cart img {

@@ -16,6 +16,10 @@ document.querySelectorAll("input").forEach((input) => {
   });
 });
 
-document.querySelector(".form").addEventListener("submit", (form) => {
-  const promise = fetch("https://localhost:4000").then((response) => {});
-});
+// document.querySelector(".form").addEventListener("submit", (form) => {
+//   const promise = fetch("http://localhost:4000").then((response) => {});
+// });
+
+// Send Data
+
+// Get the sumbit button

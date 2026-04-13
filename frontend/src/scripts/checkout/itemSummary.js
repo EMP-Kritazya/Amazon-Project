@@ -4,13 +4,13 @@ import {
   removeFromCart,
   updateCart,
   updateDeliveryOptions,
-} from "../../data/cart.js";
-import { products } from "../../data/product.js";
+} from "../../../data/cart.js";
+import { products } from "../../../data/product.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
-import { deliveryOptions } from "../../data/deliveryOptions.js";
+import { deliveryOptions } from "../../../data/deliveryOptions.js";
 import { updateTotal } from "./orderSummary.js";
 import { renderOrderSummary } from "./orderSummary.js";
-import { formatCurrency } from "../../utils/money.js";
+import { formatCurrency } from "../../../utils/money.js";
 
 export function renderItemsSummary() {
   let cartItemId;

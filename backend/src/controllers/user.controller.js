@@ -36,8 +36,10 @@ const signup = async (req, res) => {
       password,
     });
 
-    const msg = "User-Registered";
-    return res.redirect(`/auth/login/?msg=${msg}`);
+    const msg = "User Registered";
+    return res.status(201).json({
+      message: msg,
+    });
   } catch (error) {
     const statusCode = error.name === "ValidationError" ? 400 : 500;
     res.status(statusCode).json({
@@ -90,13 +92,13 @@ const loginUser = async (req, res, next) => {
 // need to load login page
 const loginPage = async (req, res, next) => {
   res.status(200).json({
-    message: "In Login Page",
+    message: "load login page",
   });
 };
 
 const signupPage = async (req, res, next) => {
   res.status(200).json({
-    message: "In SignUp Page",
+    message: "load signup page",
   });
 };
 
@@ -123,7 +125,7 @@ const deleteProfile = async (req, res, next) => {
 
 const homePage = async (req, res, next) => {
   res.status(200).json({
-    message: "In HomePage",
+    message: "load home page",
   });
 };
 
