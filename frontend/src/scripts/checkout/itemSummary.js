@@ -12,24 +12,39 @@ import { updateTotal } from "./orderSummary.js";
 import { renderOrderSummary } from "./orderSummary.js";
 import { formatCurrency } from "../../../utils/money.js";
 
-export function renderItemsSummary() {
+export async function renderItemsSummary() {
   let cartItemId;
   let matchingProduct;
   let cartQuantity;
   let cartItemsHtml = "";
 
-  cart.forEach((cartItem) => {
-    cartItemId = cartItem.productId;
+  // Get items from cart
+  const response = await fetch("http:localhost:4000/cart/getCartItems", {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    alert("Please Login Again");
+  }
+
+  data = response.json().data;
+  if (data.message === "successfully loaded cart items") {
+    cartItems = items;
+  }
+
+  cartItems.forEach((cartItem) => {
+    cartItemId = cartItem.id;
     matchingProduct = products.find((item) => item.id === cartItemId);
 
     if (!matchingProduct) {
-      console.error("Product not found:", items.productId);
+      console.error("Product not found:", items.id);
       return;
     }
 
     const deliveryOptionId = cartItem.deliveryOptionId;
 
     let deliveryOption;
+
     deliveryOptions.forEach((option) => {
       if (option.id === deliveryOptionId) {
         deliveryOption = option;

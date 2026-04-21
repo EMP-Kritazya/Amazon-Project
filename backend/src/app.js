@@ -1,13 +1,19 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-
-// import cors from "cors";  I skipped this as I am applying proxy
+import cors from "cors";
 
 const app = express(); // Create an express app
 
+// Allow browser clients on any localhost port (Live Server, Vite, etc.) to call the API with cookies.
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(cookieParser());
-// app.use(cors);
 
 // routes import
 import authRouter from "./routes/auth.route.js";

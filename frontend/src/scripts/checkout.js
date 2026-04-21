@@ -3,13 +3,13 @@ import { renderOrderSummary } from "./checkout/orderSummary.js";
 import { loadProductsFetch } from "../../data/product.js";
 
 async function loadPage() {
-  try {
-    await loadProductsFetch();
-  } catch (error) {
-    console.log("Unexpected Error. Please try again later!");
-  }
-  renderItemsSummary();
-  renderOrderSummary();
+  // try {
+  //   await loadProductsFetch();
+  // } catch (error) {
+  //   console.log("Unexpected Error. Please try again later!");
+  // }
+  await renderItemsSummary();
+  await renderOrderSummary();
 }
 loadPage();
 

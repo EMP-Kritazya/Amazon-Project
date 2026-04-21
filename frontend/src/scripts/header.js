@@ -5,6 +5,9 @@ let container = document.querySelector(".header");
 let rightContent;
 
 if (loggedIn) {
+  // Get cart number
+  const numberofItems = await fetch("/");
+
   rightContent = `
     <a href="orders.html" class="ro">
       <span class="returns">Returns</span>

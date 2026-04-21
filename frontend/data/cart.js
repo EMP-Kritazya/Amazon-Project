@@ -1,45 +1,31 @@
 export let cart;
 
-loadFromBackend();
-
-export function loadFromBackend() {
-  // load from backend
-
-  cart = JSON.parse(localStorage.getItem("cart")) || [];
-}
-
-// Adds the product to the cart
-// If the product already exists then it will just update it's quantity
-// If not then it will push a new product to the cart
+// todo: call backend fetch
 export async function addToCart(productId) {
-  let matchingItem;
-
-  cart.forEach((item) => {
-    if (item.productId === productId) {
-      matchingItem = item;
-    }
-  });
-  if (matchingItem) {
-    matchingItem.quantity += 1;
-  } else {
-    cart.push({
-      productId: productId,
-      quantity: 1,
-      deliveryOptionId: "1",
-    });
-  }
-
-  const sendCartDetails = await fetch(
-    "http:localhost:4000/auth/cart/addToCart",
-    {
+  const itemDetail = {
+    productId: productId,
+    quantity: 1,
+    deliveryOptionId: 1,
+  };
+  try {
+    const response = await fetch("/carts/addToCart", {
       method: "POST",
+      body: JSON.stringify(itemDetail),
       credentials: "include",
-      header: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(cart),
-    },
-  );
+    });
+
+    data = await response.json();
+
+    if (data.message === "Failed to Verify") {
+      return "";
+    }
+
+    if (data.message === "add-to-cart successful") {
+      return data.totalItems;
+    }
+  } catch (error) {
+    alert(error.message);
+  }
 }
 
 export function removeFromCart(productId) {
@@ -53,12 +39,27 @@ export function removeFromCart(productId) {
   saveToStorage();
 }
 
-export function calculateCartQuantity() {
+export async function calculateCartQuantity() {
   let totalCartItems = 0;
-  cart.forEach((item) => {
-    totalCartItems += item.quantity;
-  });
-  return totalCartItems;
+  try {
+    const response = await fetch("/cart/getCartQuantity", {
+      method: "GET",
+    });
+
+    data = await response.json();
+
+    if (data.message === "Failed to Verify") {
+      return "";
+    }
+
+    if (data.message === "total items retrieved") {
+      totalCartItems = data.totalItems;
+    }
+
+    return totalCartItems;
+  } catch (error) {
+    alert(error.message);
+  }
 }
 
 export function updateCart(productId, quantity) {
@@ -81,8 +82,4 @@ export function updateDeliveryOptions(productId, deliveryOptionId) {
 export function emptyCart() {
   cart = [];
   saveToStorage();
-}
-
-function saveToStorage() {
-  localStorage.setItem("cart", JSON.stringify(cart));
 }

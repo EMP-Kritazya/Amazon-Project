@@ -1,3 +1,5 @@
+import { API_BASE, parseJsonResponse } from "../../utils/api.js";
+
 document.querySelectorAll(".signin-field-label").forEach((label) => {
   label.addEventListener("click", function () {
     const input = this.previousElementSibling;
@@ -16,41 +18,41 @@ document.querySelectorAll("input").forEach((input) => {
   });
 });
 
-// Send Data
+document.querySelector(".form").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-// Get the sumbit button
-const signupForm = document.querySelector(".form");
-
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault(); // it prevents the page from reloading
-
-  // Now we collect data from previous fields
   const username = document.getElementById("username").value;
-
   const email = document.getElementById("email").value;
-
   const password = document.getElementById("password").value;
-
   const userData = { username, email, password };
 
   try {
-    const response = await fetch("/auth/signup", {
+    const response = await fetch(`${API_BASE}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(userData),
     });
 
+    const data = await parseJsonResponse(response);
+
     if (response.ok) {
-      alert("Account created successfully");
-      window.location.href = "/api/amazon";
+      if (data.message == "User Registered") {
+        window.location.href = "/frontend/login.html";
+      } else {
+        throw new Error("Something went Wrong");
+      }
     } else {
-      const result = await response.json();
-      alert("Error: " + result.message);
+      alert("Error: " + (data.message || "Request failed"));
     }
   } catch (error) {
     console.log("Network error: ", error);
-    alert("Internal Error. Please try again after some time");
+    alert(
+      "Error: " +
+        (error.message ||
+          "Request failed — check that the backend is running on port 4000."),
+    );
   }
 });

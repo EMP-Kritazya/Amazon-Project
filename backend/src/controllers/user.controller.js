@@ -42,7 +42,7 @@ const signup = async (req, res) => {
     });
   } catch (error) {
     const statusCode = error.name === "ValidationError" ? 400 : 500;
-    res.status(statusCode).json({
+    return res.status(statusCode).json({
       message: error.message || "Internal Sever Error",
     });
   }
@@ -92,13 +92,13 @@ const loginUser = async (req, res, next) => {
 // need to load login page
 const loginPage = async (req, res, next) => {
   res.status(200).json({
-    message: "load login page",
+    message: "load loginpage",
   });
 };
 
 const signupPage = async (req, res, next) => {
   res.status(200).json({
-    message: "load signup page",
+    message: "load signuppage",
   });
 };
 

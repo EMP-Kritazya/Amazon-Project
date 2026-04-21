@@ -14,7 +14,7 @@ import {
 
 const router = Router();
 
-router.get("/amazon", authMiddleware, homePage);
+router.get("/homepage", authMiddleware, homePage);
 
 router.post("/login", loginUser);
 

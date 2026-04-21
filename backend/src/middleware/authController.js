@@ -34,13 +34,16 @@ const authMiddleware = async (req, res, next) => {
       req.authenticated = true;
       return next();
     }
-    const msg = encodeURIComponent("failed-to-authenticate");
-    return res.redirect(`/auth/login/?msg=${msg}`);
+    return res.status(401).json({
+      message: "Failed to Verify",
+    });
   } catch (error) {
     if (error.message === "No token found") {
       console.log("Session Expired");
       const msg = encodeURIComponent("session-expired");
-      return res.redirect(`/auth/login/?msg=${msg}`);
+      return res.status(401).json({
+        message: "Failed to Verify",
+      });
     }
     res.status(500).json({
       message: "Internal Server Error",
@@ -51,7 +54,10 @@ const authMiddleware = async (req, res, next) => {
 const guestMiddleware = async (req, res, next) => {
   try {
     if (req.authenticated) {
-      return res.redirect("/auth/homepage");
+      // return res.redirect("/auth/homepage");
+      return res.status(200).json({
+        messsage: "load homepage",
+      });
     }
     const authToken = req.cookies.authToken || req.headers["authToken"];
     if (!authToken) {
@@ -64,7 +70,9 @@ const guestMiddleware = async (req, res, next) => {
     const isValid = await authenticateToken(req);
     if (isValid) {
       req.authenticated = true;
-      return res.redirect("/auth/amazon");
+      return res.status(200).json({
+        message: "load homepage",
+      });
     }
     return next();
   } catch (error) {

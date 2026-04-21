@@ -7,36 +7,46 @@ const getItems = async (req, res) => {
 };
 
 export const addToCart = async (req, res) => {
-  const cart = await Cart.findOne({ userId: req.userId });
+  try {
+    let cart = await Cart.findOne({ userId: req.userId });
 
-  const { productId, quantity, deleveryOptionId } = req.body;
+    const { productId, quantity, deleveryOptionId } = req.body;
 
-  if (!cart) {
-    // create new cart
-    cart = await Cart.create({
-      userId: req.userId,
-      items: [],
+    if (!cart) {
+      // create new cart
+      cart = await Cart.create({
+        userId: req.userId,
+        items: [],
+      });
+    }
+
+    const existingItem = cart.items.find((item) => item.id === productId);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.items.push({
+        id: productId,
+        quantity: quantity,
+        deleveryOptionId: deleveryOptionId,
+      });
+    }
+
+    await cart.save();
+
+    // get total new items
+    const totalItems = cart.items.length;
+
+    const msg = "add-to-cart successful";
+    return res.status(201).json({
+      message: msg,
+      totalItems: totalItems,
+    });
+  } catch (error) {
+    res.send(500).json({
+      message: "Failed to add to cart",
     });
   }
-
-  const existingItem = cart.items.find((item) => item.id === productId);
-
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.items.push({
-      id: productId,
-      quantity: quantity,
-      deleveryOptionId: deleveryOptionId,
-    });
-  }
-
-  await cart.save();
-
-  const msg = "add-to-cart successful";
-  return res.status(201).json({
-    message: msg,
-  });
 };
 
 export const getCartItems = async (req, res) => {
@@ -52,5 +62,25 @@ export const getCartItems = async (req, res) => {
   if (!cartItems) {
     cartItems = [];
   }
-  return res.json({ message: "successful", items: cartItems });
+  return res.json({
+    message: "successfully loaded cart items",
+    items: cartItems,
+  });
+};
+
+export const cartQuantity = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ userId: req.userId });
+
+    const totalItems = cart.items.length;
+
+    return res.json({
+      message: "total items retrieved",
+      totalItems: totalItems,
+    });
+  } catch (error) {
+    return res.send(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
