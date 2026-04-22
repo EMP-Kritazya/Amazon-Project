@@ -1,30 +1,34 @@
 export let cart;
+import { checkAuthStatus } from "../src/scripts/verify";
 
+const isLoggedIn = await checkAuthStatus();
 // todo: call backend fetch
 export async function addToCart(productId) {
-  const itemDetail = {
-    productId: productId,
-    quantity: 1,
-    deliveryOptionId: 1,
-  };
-  try {
-    const response = await fetch("/carts/addToCart", {
-      method: "POST",
-      body: JSON.stringify(itemDetail),
-      credentials: "include",
-    });
+  if (checkAuthStatus) {
+    const itemDetail = {
+      productId: productId,
+      quantity: 1,
+      deliveryOptionId: 1,
+    };
+    try {
+      const response = await fetch("/carts/addToCart", {
+        method: "POST",
+        body: JSON.stringify(itemDetail),
+        credentials: "include",
+      });
 
-    data = await response.json();
+      data = await response.json();
 
-    if (data.message === "Failed to Verify") {
-      return "";
+      if (data.message === "Failed to Verify") {
+        return "";
+      }
+
+      if (data.message === "add-to-cart successful") {
+        return data.totalItems;
+      }
+    } catch (error) {
+      alert(error.message);
     }
-
-    if (data.message === "add-to-cart successful") {
-      return data.totalItems;
-    }
-  } catch (error) {
-    alert(error.message);
   }
 }
 
@@ -36,29 +40,37 @@ export function removeFromCart(productId) {
     }
   });
   cart = updatedCart;
-  saveToStorage();
 }
 
 export async function calculateCartQuantity() {
-  let totalCartItems = 0;
-  try {
-    const response = await fetch("/cart/getCartQuantity", {
-      method: "GET",
-    });
+  if (isLoggedIn) {
+    let totalCartItems = 0;
+    try {
+      const response = await fetch("/cart/getCartQuantity", {
+        method: "GET",
+        credentials: "include",
+      });
 
-    data = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to get total cart items");
+      }
 
-    if (data.message === "Failed to Verify") {
-      return "";
+      const data = await response.json();
+
+      // console.log(data.message);
+
+      if (data.message === "Failed to Verify") {
+        return "";
+      }
+
+      if (data.message === "total items retrieved") {
+        totalCartItems = data.totalItems;
+      }
+
+      return totalCartItems;
+    } catch (error) {
+      console.log("Error: ", error.message);
     }
-
-    if (data.message === "total items retrieved") {
-      totalCartItems = data.totalItems;
-    }
-
-    return totalCartItems;
-  } catch (error) {
-    alert(error.message);
   }
 }
 
@@ -79,7 +91,4 @@ export function updateDeliveryOptions(productId, deliveryOptionId) {
   saveToStorage();
 }
 
-export function emptyCart() {
-  cart = [];
-  saveToStorage();
-}
+export function emptyCart() {}

@@ -1,5 +1,20 @@
 import Cart from "../models/cart.model.js";
 
+const getCart = async (userId) => {
+  let cart = await Cart.findOne({ userId: userId });
+  console.log(cart);
+
+  if (!cart) {
+    // create new cart
+    cart = await Cart.create({
+      userId: userId,
+      items: [],
+    });
+  }
+
+  return cart;
+};
+
 const getItems = async (req, res) => {
   const cart = await Cart.find(req.userId);
 
@@ -8,17 +23,9 @@ const getItems = async (req, res) => {
 
 export const addToCart = async (req, res) => {
   try {
-    let cart = await Cart.findOne({ userId: req.userId });
+    const cart = await getCart(req.userId);
 
     const { productId, quantity, deleveryOptionId } = req.body;
-
-    if (!cart) {
-      // create new cart
-      cart = await Cart.create({
-        userId: req.userId,
-        items: [],
-      });
-    }
 
     const existingItem = cart.items.find((item) => item.id === productId);
 
@@ -50,15 +57,17 @@ export const addToCart = async (req, res) => {
 };
 
 export const getCartItems = async (req, res) => {
-  const cart = await Cart.findOne({ userId: req.userId });
+  let cart = await getCart(req.userId);
 
   if (!cart) {
-    return res.send(404).json({
+    return res.status(404).json({
       message: "User not found. Please login again",
+      items: [],
     });
   }
 
   const cartItems = await cart.items;
+
   if (!cartItems) {
     cartItems = [];
   }
@@ -73,13 +82,13 @@ export const cartQuantity = async (req, res) => {
     const cart = await Cart.findOne({ userId: req.userId });
 
     const totalItems = cart.items.length;
-
+    console.log(totalItems);
     return res.json({
       message: "total items retrieved",
       totalItems: totalItems,
     });
   } catch (error) {
-    return res.send(500).json({
+    return res.status(500).json({
       message: "Internal Server Error",
     });
   }

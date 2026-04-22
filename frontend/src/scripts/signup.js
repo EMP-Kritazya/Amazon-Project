@@ -1,5 +1,3 @@
-import { API_BASE, parseJsonResponse } from "../../utils/api.js";
-
 document.querySelectorAll(".signin-field-label").forEach((label) => {
   label.addEventListener("click", function () {
     const input = this.previousElementSibling;
@@ -27,7 +25,7 @@ document.querySelector(".form").addEventListener("submit", async (e) => {
   const userData = { username, email, password };
 
   try {
-    const response = await fetch(`${API_BASE}/auth/signup`, {
+    const response = await fetch(`/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +34,7 @@ document.querySelector(".form").addEventListener("submit", async (e) => {
       body: JSON.stringify(userData),
     });
 
-    const data = await parseJsonResponse(response);
+    const data = await response.json();
 
     if (response.ok) {
       if (data.message == "User Registered") {

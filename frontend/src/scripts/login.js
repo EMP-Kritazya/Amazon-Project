@@ -1,7 +1,5 @@
-import { API_BASE, parseJsonResponse } from "../../utils/api.js";
-
 try {
-  const response = await fetch(`${API_BASE}/auth/login`, {
+  const response = await fetch(`/auth/login`, {
     method: "GET",
     credentials: "include",
   });
@@ -40,7 +38,7 @@ document.querySelector(".form").addEventListener("submit", async (form) => {
   const content = { email, password };
 
   try {
-    const response = await fetch(`${API_BASE}/auth/login`, {
+    const response = await fetch(`/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +47,7 @@ document.querySelector(".form").addEventListener("submit", async (form) => {
       body: JSON.stringify(content),
     });
 
-    const data = await parseJsonResponse(response);
+    const data = await response.json();
 
     if (response.ok && data.message === "Login Successful") {
       window.location.href = "/frontend/index.html";

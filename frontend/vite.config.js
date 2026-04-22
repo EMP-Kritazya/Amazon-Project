@@ -16,7 +16,16 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/auth": "http://localhost:4000",
+      "/auth": {
+        target: "http://localhost:4000",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/cart": {
+        target: "http://localhost:4000",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

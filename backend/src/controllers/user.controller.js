@@ -124,7 +124,7 @@ const deleteProfile = async (req, res, next) => {
 };
 
 const homePage = async (req, res, next) => {
-  res.status(200).json({
+  return res.status(200).json({
     message: "load home page",
   });
 };

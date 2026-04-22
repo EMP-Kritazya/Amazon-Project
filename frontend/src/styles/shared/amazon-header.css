@@ -79,7 +79,6 @@
 
 .ro {
   margin-right: 14px;
-  display: none;
 }
 
 .ro .returns {
@@ -109,14 +108,18 @@
 }
 
 .login {
-  margin-right: 5px;
+  margin-right: 25px;
+}
+
+.verify-href {
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .cart {
   position: relative;
   display: flex;
   align-items: center;
-  display: none;
 }
 
 .cart img {

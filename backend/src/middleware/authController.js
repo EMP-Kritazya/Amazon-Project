@@ -7,7 +7,7 @@ import { User } from "../models/user.model.js";
 
 const createToken = (id) => {
   return jwt.sign({ id }, `${process.env.SECRETKEY}`, {
-    expiresIn: "5m",
+    expiresIn: "15m",
   });
 };
 
@@ -45,7 +45,7 @@ const authMiddleware = async (req, res, next) => {
         message: "Failed to Verify",
       });
     }
-    res.status(500).json({
+    return res.status(500).json({
       message: "Internal Server Error",
     });
   }

@@ -1,15 +1,30 @@
 // Check if the user is logged in, if not then show them the guest page
 
-export let loggedIn = false;
+/**
+ * Verifies authentication status with the backend.
+ * @returns {Promise<boolean>}
+ */
 
-const getStatus = fetch("http://localhost:4000/auth/amazon");
+export const checkAuthStatus = async () => {
+  try {
+    const response = await fetch("/auth/homepage", {
+      method: "GET",
+      credentials: "include",
+    });
 
-if (!getStatus.ok) {
-  loggedIn = false;
-}
+    if (!response.ok) {
+      console.warn(`Auth check failed with status: ${response.status}`);
+      return false;
+    }
 
-response = getStatus.json().data;
+    const result = await response.json();
 
-if (response === "load home page") {
-  loggedIn = true;
-}
+    if (result.message === "load home page") {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Network error during auth checkL ", error);
+    return false;
+  }
+};

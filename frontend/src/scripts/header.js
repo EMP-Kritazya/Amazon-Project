@@ -1,12 +1,13 @@
-import { loggedIn } from "./verify";
+import { calculateCartQuantity } from "../../data/cart.js";
+import { checkAuthStatus } from "./verify.js";
 
 let container = document.querySelector(".header");
-
+const isLoggedIn = await checkAuthStatus();
 let rightContent;
 
-if (loggedIn) {
+if (isLoggedIn) {
   // Get cart number
-  const numberofItems = await fetch("/");
+  const numberofItems = await calculateCartQuantity();
 
   rightContent = `
     <a href="orders.html" class="ro">
@@ -15,26 +16,26 @@ if (loggedIn) {
     </a>
 
     <a href="checkout.html" class="cart">
-      <img src="images/cart-icon.png" alt="" class="cart-icon" />
-      <div class="cart-items js-number-of-items"></div>
+      <img src="../../images/cart-icon.png" alt="" class="cart-icon" />
+      <div class="cart-items js-number-of-items">${calculateCartQuantity()}</div>
       <div class="cart-text">Cart</div>
     </a>
   `;
 } else {
   rightContent = `
-    <a href="verify.html" class="verify">
-      <span class="login">LogIn</span>
-      <span class="signup">SignUp</span>
-    </a>
+    <div class="verify">
+      <a href="/login.html" class = "verify-href"><span class="login">LogIn</span></a>
+      <a href="/signup.html" class = "verify-href"><span class="signup">SignUp</span></a>
+    </div>
   `;
 }
 
-content = `
+const content = `
   <section class="left">
     <a href="amazon.html" class="header-link">
-      <img src="images/amazon-logo-white.png" alt="" class="amazon-logo" />
+      <img src="../../images/amazon-logo-white.png" alt="" class="amazon-logo" />
       <img
-        src="images/amazon-mobile-logo-white.png"
+        src="../../images/amazon-mobile-logo-white.png"
         alt=""
         class="amazon-mobile-logo"
       />
@@ -43,7 +44,7 @@ content = `
   <section class="middle">
     <input type="text" class="search-box" placeholder="Search" />
     <button class="search-button">
-      <img src="images/search-icon.png" alt="" class="search-image" />
+      <img src="../../images/search-icon.png" alt="" class="search-image" />
     </button>
   </section>
   <section class="right">
