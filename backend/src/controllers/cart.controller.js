@@ -14,42 +14,36 @@ const getCart = async (userId) => {
   return cart;
 };
 
-// const getItems = async (req, res) => {
-//   const cart = await Cart.find(req.userId);
-
-//   cartItems = cart.items;
-// };
-
 export const addToCart = async (req, res) => {
   try {
     const cart = await getCart(req.userId);
+    console.log(req.body);
+    const { productId, quantity, deliveryOptionId } = req.body;
 
-    const { productId, quantity, deleveryOptionId } = req.body;
-
-    const existingItem = cart.items.find((item) => item.id === productId);
+    const existingItem = cart.items.find(
+      (item) => item.id.toString() === productId.toString(),
+    );
 
     if (existingItem) {
-      existingItem.quantity += 1;
+      existingItem.quantity += quantity;
     } else {
       cart.items.push({
         id: productId,
         quantity: quantity,
-        deleveryOptionId: deleveryOptionId,
+        deliveryOptionId: deliveryOptionId,
       });
     }
 
     await cart.save();
 
-    // get total new items
-    const totalItems = cart.items.length;
-
     const msg = "add-to-cart successful";
+
     return res.status(201).json({
       message: msg,
-      totalItems: totalItems,
     });
   } catch (error) {
-    res.send(500).json({
+    console.log(error);
+    return res.status(500).json({
       message: "Failed to add to cart",
     });
   }

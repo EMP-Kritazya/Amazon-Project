@@ -3,29 +3,33 @@ import { checkAuthStatus } from "../src/scripts/verify";
 
 const isLoggedIn = await checkAuthStatus();
 // todo: call backend fetch
-export async function addToCart(productId) {
-  if (checkAuthStatus) {
+export async function addToCart(productId, quantity) {
+  if (isLoggedIn) {
     const itemDetail = {
       productId: productId,
-      quantity: 1,
+      quantity: quantity,
       deliveryOptionId: 1,
     };
     try {
-      const response = await fetch("/carts/addToCart", {
+      const response = await fetch("/cart/addToCart", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(itemDetail),
         credentials: "include",
       });
 
-      data = await response.json();
-
-      if (data.message === "Failed to Verify") {
-        return "";
+      if (!response.ok) {
+        throw new Error("Failed to get total cart items");
       }
+
+      const data = await response.json();
 
       if (data.message === "add-to-cart successful") {
-        return data.totalItems;
+        return true;
       }
+      return false;
     } catch (error) {
       alert(error.message);
     }

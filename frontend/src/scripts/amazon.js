@@ -75,12 +75,18 @@ if (isLoggedIn) {
   }
 
   document.querySelectorAll(".js-add-to-cart").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const productId = button.dataset.productId;
-
-      const newCartTotal = addToCart(productId);
-      updateCartQuantity(newCartTotal);
-      generateAddedText(productId);
+      const quantity = document.querySelector(
+        `.js-quantity-selector-${productId}`,
+      ).value;
+      const status = await addToCart(productId, quantity);
+      if (status) {
+        await updateCartQuantity();
+        generateAddedText(productId);
+      } else {
+        console.log("Failed to add product");
+      }
     });
   });
 }
