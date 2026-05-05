@@ -2,7 +2,6 @@ import Cart from "../models/cart.model.js";
 
 const getCart = async (userId) => {
   let cart = await Cart.findOne({ userId: userId });
-  console.log(cart);
 
   if (!cart) {
     // create new cart
@@ -15,11 +14,11 @@ const getCart = async (userId) => {
   return cart;
 };
 
-const getItems = async (req, res) => {
-  const cart = await Cart.find(req.userId);
+// const getItems = async (req, res) => {
+//   const cart = await Cart.find(req.userId);
 
-  cartItems = cart.items;
-};
+//   cartItems = cart.items;
+// };
 
 export const addToCart = async (req, res) => {
   try {
@@ -66,7 +65,7 @@ export const getCartItems = async (req, res) => {
     });
   }
 
-  const cartItems = await cart.items;
+  let cartItems = cart.items;
 
   if (!cartItems) {
     cartItems = [];
@@ -79,10 +78,9 @@ export const getCartItems = async (req, res) => {
 
 export const cartQuantity = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.userId });
+    const cart = await getCart(req.userId);
 
     const totalItems = cart.items.length;
-    console.log(totalItems);
     return res.json({
       message: "total items retrieved",
       totalItems: totalItems,

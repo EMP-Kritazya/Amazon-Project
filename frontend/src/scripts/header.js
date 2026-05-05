@@ -17,7 +17,7 @@ if (isLoggedIn) {
 
     <a href="checkout.html" class="cart">
       <img src="../../images/cart-icon.png" alt="" class="cart-icon" />
-      <div class="cart-items js-number-of-items">${calculateCartQuantity()}</div>
+      <div class="cart-items js-number-of-items">${numberofItems}</div>
       <div class="cart-text">Cart</div>
     </a>
   `;

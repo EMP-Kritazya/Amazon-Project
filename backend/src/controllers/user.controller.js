@@ -3,7 +3,7 @@ import { User } from "../models/user.model.js";
 
 const addCookie = (res, user) => {
   const token = createToken(user._id);
-  res.cookie("authToken", token, { httpOnly: true, maxAge: 5 * 60 * 1000 });
+  res.cookie("authToken", token, { httpOnly: true, maxAge: 15 * 60 * 1000 });
 };
 
 const deleteCookie = (res) => {
@@ -37,6 +37,7 @@ const signup = async (req, res) => {
     });
 
     const msg = "User Registered";
+    addCookie(res, user);
     return res.status(201).json({
       message: msg,
     });

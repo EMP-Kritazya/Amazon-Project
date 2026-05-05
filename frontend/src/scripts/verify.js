@@ -24,7 +24,7 @@ export const checkAuthStatus = async () => {
     }
     return false;
   } catch (error) {
-    console.error("Network error during auth checkL ", error);
+    console.error("Network error during auth check", error);
     return false;
   }
 };

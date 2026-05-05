@@ -55,11 +55,8 @@ products.forEach((product) => {
 document.querySelector(".js-products-grid").innerHTML = productsHTML;
 
 if (isLoggedIn) {
-  updateCartQuantity();
-  function updateCartQuantity(totalCartItems) {
-    if (totalCartItems === "") {
-      const totalCartItems = calculateCartQuantity();
-    }
+  async function updateCartQuantity() {
+    const totalCartItems = await calculateCartQuantity();
 
     document.querySelector(".js-number-of-items").innerHTML = totalCartItems;
   }

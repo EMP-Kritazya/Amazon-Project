@@ -57,10 +57,8 @@ export async function calculateCartQuantity() {
 
       const data = await response.json();
 
-      // console.log(data.message);
-
       if (data.message === "Failed to Verify") {
-        return "";
+        return 0;
       }
 
       if (data.message === "total items retrieved") {
@@ -70,6 +68,7 @@ export async function calculateCartQuantity() {
       return totalCartItems;
     } catch (error) {
       console.log("Error: ", error.message);
+      return 0;
     }
   }
 }
