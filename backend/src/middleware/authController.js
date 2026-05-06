@@ -40,7 +40,7 @@ const authMiddleware = async (req, res, next) => {
   } catch (error) {
     if (error.message === "No token found") {
       console.log("Session Expired");
-      const msg = encodeURIComponent("session-expired");
+
       return res.status(401).json({
         message: "Failed to Verify",
       });

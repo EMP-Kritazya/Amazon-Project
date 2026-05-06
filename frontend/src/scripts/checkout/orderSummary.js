@@ -4,9 +4,9 @@ import { getDeliveryCharge } from "../../../data/deliveryOptions.js";
 import { finalizeOrders } from "../orders.js";
 import { formatCurrency } from "../../../utils/money.js";
 
-export function renderOrderSummary() {
+export async function renderOrderSummary() {
   // Get all Required Variables
-  const cartQuantity = calculateCartQuantity();
+  const cartQuantity = await calculateCartQuantity();
   const totalItemsCost = updateTotal();
 
   const sHcharge = getDeliveryCharge();

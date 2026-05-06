@@ -25,7 +25,7 @@ export const addToCart = async (req, res) => {
     );
 
     if (existingItem) {
-      existingItem.quantity += quantity;
+      existingItem.quantity += Number(quantity);
     } else {
       cart.items.push({
         id: productId,
@@ -74,7 +74,12 @@ export const cartQuantity = async (req, res) => {
   try {
     const cart = await getCart(req.userId);
 
-    const totalItems = cart.items.length;
+    let totalItems = 0;
+
+    cart.items.forEach((item) => {
+      totalItems += Number(item.quantity);
+    });
+
     return res.json({
       message: "total items retrieved",
       totalItems: totalItems,

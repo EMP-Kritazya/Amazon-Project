@@ -1,17 +1,20 @@
-import { renderItemsSummary } from "./checkout/itemSummary.js";
-import { renderOrderSummary } from "./checkout/orderSummary.js";
-import { loadProductsFetch } from "../../data/product.js";
+import { checkAuthStatus } from "./verify.js";
 
-async function loadPage() {
-  // try {
-  //   await loadProductsFetch();
-  // } catch (error) {
-  //   console.log("Unexpected Error. Please try again later!");
-  // }
-  await renderItemsSummary();
-  await renderOrderSummary();
+const isLoggedIn = await checkAuthStatus();
+
+if (isLoggedIn) {
+  const { renderItemsSummary } = await import("./checkout/itemSummary.js");
+  const { renderOrderSummary } = await import("./checkout/orderSummary.js");
+  const { loadProductsFetch } = await import("../../data/product.js");
+
+  async function loadPage() {
+    await renderItemsSummary();
+    await renderOrderSummary();
+  }
+  loadPage();
+} else {
+  window.location.href = "/login.html";
 }
-loadPage();
 
 // new Promise((resolve) => {
 //   loadProductsFetch().then(() => {

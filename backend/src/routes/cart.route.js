@@ -10,4 +10,5 @@ router.get("/getCartItems", authMiddleware, getCartItems);
 router.post("/addToCart", authMiddleware, addToCart);
 
 router.get("/getCartQuantity", authMiddleware, cartQuantity);
+
 export default router;

@@ -15,7 +15,7 @@ if (isLoggedIn) {
       <span class="orders">& Orders</span>
     </a>
 
-    <a href="checkout.html" class="cart">
+    <a href="/checkout.html" class="cart">
       <img src="../../images/cart-icon.png" alt="" class="cart-icon" />
       <div class="cart-items js-number-of-items">${numberofItems}</div>
       <div class="cart-text">Cart</div>

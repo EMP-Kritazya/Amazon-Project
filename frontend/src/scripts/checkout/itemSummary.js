@@ -19,41 +19,45 @@ export async function renderItemsSummary() {
   let cartItemsHtml = "";
 
   // Get items from cart
-  const response = await fetch("http:localhost:4000/cart/getCartItems", {
+  const response = await fetch("/cart/getCartItems", {
     method: "GET",
+    credentials: "include",
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    alert("Please Login Again");
+    console.log(data.message);
+    return response.message;
   }
 
-  data = response.json().data;
   if (data.message === "successfully loaded cart items") {
     cartItems = items;
   }
 
-  cartItems.forEach((cartItem) => {
-    cartItemId = cartItem.id;
-    matchingProduct = products.find((item) => item.id === cartItemId);
+  if (cartItems.length != 0) {
+    cartItems.forEach((cartItem) => {
+      cartItemId = cartItem.id;
+      matchingProduct = products.find((item) => item.id === cartItemId);
 
-    if (!matchingProduct) {
-      console.error("Product not found:", items.id);
-      return;
-    }
-
-    const deliveryOptionId = cartItem.deliveryOptionId;
-
-    let deliveryOption;
-
-    deliveryOptions.forEach((option) => {
-      if (option.id === deliveryOptionId) {
-        deliveryOption = option;
+      if (!matchingProduct) {
+        console.error("Product not found:", items.id);
+        return;
       }
-    });
 
-    const dateString = getDeliveryDate(deliveryOption.id);
+      const deliveryOptionId = cartItem.deliveryOptionId;
 
-    cartItemsHtml += `
+      let deliveryOption;
+
+      deliveryOptions.forEach((option) => {
+        if (option.id === deliveryOptionId) {
+          deliveryOption = option;
+        }
+      });
+
+      const dateString = getDeliveryDate(deliveryOption.id);
+
+      cartItemsHtml += `
       <div class="items-summary js-cart-item-container js-cart-item-container-${matchingProduct.id}">
         <div class="cart-item-container">
           <div class="delivery-date js-change-delivery-date-${matchingProduct.id}">
@@ -92,13 +96,17 @@ export async function renderItemsSummary() {
         </div>
       </div>
     `;
-  });
+    });
+  } else {
+    cartItemsHtml = "Nothing in the Bag :(";
+  }
+
   document.querySelector(".js-left").innerHTML = cartItemsHtml;
 
   // Updates the cart quantity in the Header of the page
-  updateHeaderCartQuantity();
+  await updateHeaderCartQuantity();
   // Updates total cost of all items in the cart
-  updateTotal();
+  await updateTotal();
 
   function deliveryOptionsHTML(matchingProduct, cartItem) {
     let html = "";
@@ -189,8 +197,8 @@ export async function renderItemsSummary() {
   });
 
   // Display total cart size in the header
-  function updateHeaderCartQuantity() {
-    cartQuantity = calculateCartQuantity();
+  async function updateHeaderCartQuantity() {
+    cartQuantity = await calculateCartQuantity();
     document.querySelector(".return-to-home-link").innerHTML =
       `${cartQuantity} items`;
   }
