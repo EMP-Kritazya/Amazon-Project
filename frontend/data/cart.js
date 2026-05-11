@@ -77,12 +77,15 @@ export async function calculateCartQuantity() {
   }
 }
 
+// Since
+
+// not required maybe since I'll update the db
 export function updateCart(productId, quantity) {
   const cartItem = cart.find((item) => item.productId === productId);
   cartItem.quantity = quantity;
-  saveToStorage();
 }
 
+// not required maybe since I'll update the db
 export function updateDeliveryOptions(productId, deliveryOptionId) {
   let matchingItem;
   cart.forEach((item) => {
@@ -91,7 +94,7 @@ export function updateDeliveryOptions(productId, deliveryOptionId) {
     }
   });
   matchingItem.deliveryOptionId = deliveryOptionId;
-  saveToStorage();
+  // saveToStorage();
 }
 
 export function emptyCart() {}

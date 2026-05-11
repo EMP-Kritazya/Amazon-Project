@@ -7,6 +7,8 @@ if (isLoggedIn) {
   const { renderOrderSummary } = await import("./checkout/orderSummary.js");
   const { loadProductsFetch } = await import("../../data/product.js");
 
+  await loadProductsFetch();
+
   async function loadPage() {
     await renderItemsSummary();
     await renderOrderSummary();

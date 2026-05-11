@@ -17,6 +17,7 @@ export async function renderItemsSummary() {
   let matchingProduct;
   let cartQuantity;
   let cartItemsHtml = "";
+  let cartItems;
 
   // Get items from cart
   const response = await fetch("/cart/getCartItems", {
@@ -27,22 +28,25 @@ export async function renderItemsSummary() {
   const data = await response.json();
 
   if (!response.ok) {
-    console.log(data.message);
+    console.error(data.message);
     return response.message;
   }
 
+  // if we get a success response we move forward
   if (data.message === "successfully loaded cart items") {
-    cartItems = items;
+    cartItems = data.items;
   }
 
-  if (cartItems.length != 0) {
+  // check for cart item's length, find the matching product from the cart
+  // and proceed with all details of that product
+  if (cartItems && cartItems.length !== 0) {
     cartItems.forEach((cartItem) => {
       cartItemId = cartItem.id;
       matchingProduct = products.find((item) => item.id === cartItemId);
 
       if (!matchingProduct) {
-        console.error("Product not found:", items.id);
-        return;
+        console.error("Product not found:", cartItem.id);
+        throw new Error("Product not found");
       }
 
       const deliveryOptionId = cartItem.deliveryOptionId;
@@ -50,7 +54,7 @@ export async function renderItemsSummary() {
       let deliveryOption;
 
       deliveryOptions.forEach((option) => {
-        if (option.id === deliveryOptionId) {
+        if (Number(option.id) === deliveryOptionId) {
           deliveryOption = option;
         }
       });
@@ -118,7 +122,7 @@ export async function renderItemsSummary() {
         deliveryOption.priceCents === 0
           ? "FREE"
           : `$${deliveryOption.priceCents / 100} -`;
-      const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
+      const isChecked = Number(deliveryOption.id) === cartItem.deliveryOptionId;
 
       html += `
         <div class="delivery-option-buttons js-delivery-option js-edit-delivery-option-${matchingProduct.id}" data-delivery-option-id = "${deliveryOption.id}" data-product-id= "${matchingProduct.id}">
@@ -140,14 +144,15 @@ export async function renderItemsSummary() {
 
   // Listens for click on DELETE link for all items and functions accordingly
   document.querySelectorAll(".js-delete-link").forEach((link) => {
-    link.addEventListener("click", () => {
+    link.addEventListener("click", async () => {
       const productId = link.dataset.productId;
-      removeFromCart(productId);
+      // Need api call
+      // removeFromCart(productId);
       document.querySelector(`.js-cart-item-container-${productId}`).remove();
 
-      cartQuantity = calculateCartQuantity();
-      updateTotal();
-      renderOrderSummary();
+      const cartQuantity = await calculateCartQuantity();
+      // updateTotal();
+      await renderOrderSummary();
     });
   });
 
@@ -165,7 +170,7 @@ export async function renderItemsSummary() {
 
   // Listens for click on SAVE link for all items and functions accordingly
   document.querySelectorAll(".js-save-link").forEach((link) => {
-    link.addEventListener("click", () => {
+    link.addEventListener("click", async () => {
       const productId = link.dataset.productId;
 
       // I need to get value from the input box and update cart quantity for that Item
@@ -178,21 +183,23 @@ export async function renderItemsSummary() {
         .querySelector(`.js-cart-details-${productId}`)
         .classList.remove("is-editing-quantity", "is-not-editable");
 
-      updateCart(productId, newQuantity);
-      renderOrderSummary();
-      renderItemsSummary();
+      // Create UPDATE REQUEST
+      // updateCart(productId, newQuantity);
+
+      await renderOrderSummary();
+      await renderItemsSummary();
     });
   });
 
   // Listens to click on Delivery Dates
   document.querySelectorAll(`.js-delivery-option`).forEach((element) => {
-    element.addEventListener("click", () => {
+    element.addEventListener("click", async () => {
       const { productId, deliveryOptionId } = element.dataset;
 
-      // Updates the deliveryId for cart
+      // Updates the deliveryId for cart using POST
       updateDeliveryOptions(productId, deliveryOptionId);
-      renderItemsSummary();
-      renderOrderSummary();
+      await renderItemsSummary();
+      await renderOrderSummary();
     });
   });
 
