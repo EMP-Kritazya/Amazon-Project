@@ -29,7 +29,7 @@ export async function renderItemsSummary() {
 
   if (!response.ok) {
     console.error(data.message);
-    return response.message;
+    throw new Error(data.message, { cause: "renderItemsSummary" });
   }
 
   // if we get a success response we move forward

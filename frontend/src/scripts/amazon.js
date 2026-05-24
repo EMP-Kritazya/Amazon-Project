@@ -2,14 +2,15 @@ import { addToCart, calculateCartQuantity } from "../../data/cart.js";
 import { products, loadProductsFetch } from "../../data/product.js";
 import { checkAuthStatus } from "./verify.js";
 
-await loadProductsFetch();
+try {
+  await loadProductsFetch();
+  const isLoggedIn = await checkAuthStatus();
 
-let productsHTML = "";
-let timeoutId = null;
-const isLoggedIn = await checkAuthStatus();
+  let productsHTML = "";
+  let timeoutId = null;
 
-products.forEach((product) => {
-  productsHTML += `
+  products.forEach((product) => {
+    productsHTML += `
   <div class="product-area">
     <div class="product-details">
       <div class="product-image">
@@ -49,44 +50,47 @@ products.forEach((product) => {
     </div>
     <button class="add-to-cart js-add-to-cart" data-product-id = "${product.id}">Add to Cart</button>
   </div>
-`;
-});
+  `;
+  });
 
-document.querySelector(".js-products-grid").innerHTML = productsHTML;
+  document.querySelector(".js-products-grid").innerHTML = productsHTML;
 
-if (isLoggedIn) {
-  async function updateCartQuantity() {
-    const totalCartItems = await calculateCartQuantity();
+  if (isLoggedIn) {
+    async function updateCartQuantity() {
+      const totalCartItems = await calculateCartQuantity();
 
-    document.querySelector(".js-number-of-items").innerHTML = totalCartItems;
-  }
-
-  function generateAddedText(productId) {
-    const message = document.querySelector(`.js-added-to-cart-${productId}`);
-    message.classList.add("show-added-message");
-
-    if (message.timeoutId) {
-      clearTimeout(message.timeoutId);
+      document.querySelector(".js-number-of-items").innerHTML = totalCartItems;
     }
 
-    message.timeoutId = setTimeout(() => {
-      message.classList.remove("show-added-message");
-    }, 2000);
-  }
+    function generateAddedText(productId) {
+      const message = document.querySelector(`.js-added-to-cart-${productId}`);
+      message.classList.add("show-added-message");
 
-  document.querySelectorAll(".js-add-to-cart").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const productId = button.dataset.productId;
-      const quantity = document.querySelector(
-        `.js-quantity-selector-${productId}`,
-      ).value;
-      const status = await addToCart(productId, quantity);
-      if (status) {
-        await updateCartQuantity();
-        generateAddedText(productId);
-      } else {
-        console.log("Failed to add product");
+      if (message.timeoutId) {
+        clearTimeout(message.timeoutId);
       }
+
+      message.timeoutId = setTimeout(() => {
+        message.classList.remove("show-added-message");
+      }, 2000);
+    }
+
+    document.querySelectorAll(".js-add-to-cart").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const productId = button.dataset.productId;
+        const quantity = document.querySelector(
+          `.js-quantity-selector-${productId}`,
+        ).value;
+        const status = await addToCart(productId, quantity);
+        if (status) {
+          await updateCartQuantity();
+          generateAddedText(productId);
+        } else {
+          console.log("Failed to add product");
+        }
+      });
     });
-  });
+  }
+} catch (error) {
+  alert("Error: ", error.message || "Failed to load homepage");
 }

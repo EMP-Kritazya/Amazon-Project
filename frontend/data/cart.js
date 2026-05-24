@@ -1,8 +1,13 @@
+// Super frequently used js file
 export let cart;
 import { checkAuthStatus } from "../src/scripts/verify";
 
-const isLoggedIn = await checkAuthStatus();
-// todo: call backend fetch
+try {
+  const isLoggedIn = await checkAuthStatus();
+} catch (error) {
+  console.error("Error: ", error.message || "Internal Server Error");
+}
+
 export async function addToCart(productId, quantity) {
   if (isLoggedIn) {
     const itemDetail = {
@@ -21,17 +26,17 @@ export async function addToCart(productId, quantity) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get total cart items");
+        throw new Error("Failed to add to cart");
       }
 
       const data = await response.json();
 
-      if (data.message === "add-to-cart successful") {
+      if (response.status === 201) {
         return true;
       }
       return false;
     } catch (error) {
-      alert(error.message);
+      alert("Error: ", error.message || "Failed to add the item");
     }
   }
 }
@@ -47,33 +52,27 @@ export function removeFromCart(productId) {
 }
 
 export async function calculateCartQuantity() {
-  if (isLoggedIn) {
-    let totalCartItems = 0;
-    try {
-      const response = await fetch("/cart/getCartQuantity", {
-        method: "GET",
-        credentials: "include",
-      });
+  let totalCartItems = 0;
+  try {
+    const response = await fetch("/cart/getCartQuantity", {
+      method: "GET",
+      credentials: "include",
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to get total cart items");
-      }
+    const data = await response.json();
 
-      const data = await response.json();
-
-      if (data.message === "Failed to Verify") {
-        return 0;
-      }
-
-      if (data.message === "total items retrieved") {
-        totalCartItems = data.totalItems;
-      }
-
-      return totalCartItems;
-    } catch (error) {
-      console.log("Error: ", error.message);
-      return 0;
+    if (!response.ok) {
+      throw new Error(data.message);
     }
+
+    if (response.status === 200) {
+      totalCartItems = data.totalItems;
+    }
+
+    return totalCartItems;
+  } catch (error) {
+    console.error("Error: ", error.message);
+    return "N/A";
   }
 }
 

@@ -1,21 +1,26 @@
 import Cart from "../models/cart.model.js";
+import { User } from "../models/user.model.js";
 
 const getCart = async (userId) => {
   try {
     let cart = await Cart.findOne({ userId: userId });
 
     if (!cart) {
-      // create new cart
-      cart = await Cart.create({
-        userId: userId,
-        items: [],
-      });
+      // create new cart only if user exists
+      const exists = await User.findOne({ userId: userId });
+      if (exists) {
+        cart = await Cart.create({
+          userId: userId,
+          items: [],
+        });
+      } else {
+        throw new Error("User not found");
+      }
     }
-
     return cart;
   } catch (error) {
     return res.status(500).json({
-      message: "Internal Sever Error",
+      message: error.message || "Internal Sever Error",
     });
   }
 };
@@ -61,7 +66,7 @@ export const getCartItems = async (req, res) => {
 
     if (!cart) {
       return res.status(404).json({
-        message: "User not found",
+        message: "Error getting cart",
         items: [],
       });
     }
@@ -77,7 +82,7 @@ export const getCartItems = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };
@@ -92,13 +97,13 @@ export const cartQuantity = async (req, res) => {
       totalItems += Number(item.quantity);
     });
 
-    return res.json({
+    return res.status(200).json({
       message: "total items retrieved",
       totalItems: totalItems,
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Internal Server Error",
+      message: error.message || "Error receiving cart quantity",
     });
   }
 };

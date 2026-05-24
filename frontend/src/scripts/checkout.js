@@ -1,27 +1,34 @@
+import { findErrors, showAlert } from "../../errors/errors.js";
 import { checkAuthStatus } from "./verify.js";
 
-const isLoggedIn = await checkAuthStatus();
+async function initializeCheckout() {
+  const isLoggedIn = await checkAuthStatus();
 
-if (isLoggedIn) {
-  const { renderItemsSummary } = await import("./checkout/itemSummary.js");
-  const { renderOrderSummary } = await import("./checkout/orderSummary.js");
-  const { loadProductsFetch } = await import("../../data/product.js");
+  if (!isLoggedIn) {
+    window.location.href = "/login.html";
+    return;
+  }
 
-  await loadProductsFetch();
+  try {
+    const [
+      { renderItemsSummary },
+      { renderOrderSummary },
+      { loadProductsFetch },
+    ] = await Promise.all([
+      import("./checkout/itemSummary.js"),
+      import("./checkout/orderSummary.js"),
+      import("../../data/product.js"),
+    ]);
 
-  async function loadPage() {
+    await loadProductsFetch();
     await renderItemsSummary();
     await renderOrderSummary();
+  } catch (error) {
+    const status = findErrors(error.message);
+    console.error(error.cause);
+    showAlert(status);
+    initializeCheckout();
   }
-  loadPage();
-} else {
-  window.location.href = "/login.html";
 }
 
-// new Promise((resolve) => {
-//   loadProductsFetch().then(() => {
-//     renderItemsSummary();
-//     renderOrderSummary();
-//     resolve();
-//   });
-// });
+initializeCheckout();

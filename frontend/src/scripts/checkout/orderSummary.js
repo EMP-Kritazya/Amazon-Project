@@ -6,13 +6,14 @@ import { formatCurrency } from "../../../utils/money.js";
 
 export async function renderOrderSummary() {
   // Get all Required Variables
-  const cartQuantity = await calculateCartQuantity();
-  const totalItemsCost = updateTotal();
+  try {
+    const cartQuantity = await calculateCartQuantity();
+    const totalItemsCost = updateTotal();
 
-  const sHcharge = getDeliveryCharge();
-  const totalBeforeTax = totalItemsCost + sHcharge;
+    const sHcharge = getDeliveryCharge();
+    const totalBeforeTax = totalItemsCost + sHcharge;
 
-  let orderHtml = `
+    let orderHtml = `
     <div class="payment-summary">
       <div class="payment-title">Order Summary</div>
       <div class="payment-details">
@@ -44,13 +45,19 @@ export async function renderOrderSummary() {
       <button class="place-order js-place-order">Place your order</button>
     </div>
   `;
-  document.querySelector(".js-right").innerHTML = orderHtml;
+    document.querySelector(".js-right").innerHTML = orderHtml;
 
-  // Helps user confirm their order and navigate to orders page
-  document.querySelector(".js-place-order").addEventListener("click", () => {
-    finalizeOrders();
-    window.location.href = "http://127.0.0.1:5501/orders.html";
-  });
+    // Helps user confirm their order and navigate to orders page
+    document.querySelector(".js-place-order").addEventListener("click", () => {
+      finalizeOrders();
+      window.location.href = "http://127.0.0.1:5501/orders.html";
+    });
+  } catch (error) {
+    if (!error.cause) {
+      error.cause = "renderOrderSummary";
+    }
+    throw error;
+  }
 }
 
 // Generates totalCost for all items and Updates the page

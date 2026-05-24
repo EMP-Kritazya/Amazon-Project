@@ -42,7 +42,7 @@ const authMiddleware = async (req, res, next) => {
       console.log("Session Expired");
 
       return res.status(401).json({
-        message: "Failed to Verify",
+        message: "Please Login First",
       });
     }
     return res.status(500).json({

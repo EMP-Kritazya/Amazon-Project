@@ -6,7 +6,11 @@ try {
 
   const data = await response.json();
 
-  if (response.ok && data.message == "load homepage") {
+  if (!response.ok) {
+    throw new Error(data.message || `Server Error: ${response.status}`);
+  }
+
+  if (data.message == "load homepage") {
     window.location.href = "/frontend/index.html";
   }
 } catch (Error) {
@@ -37,6 +41,10 @@ document.querySelector(".form").addEventListener("submit", async (form) => {
   const password = document.getElementById("password").value;
   const content = { email, password };
 
+  const submitBtn = document.querySelector("submit");
+
+  if (submitBtn) submitBtn.disabled = true;
+
   try {
     const response = await fetch(`/auth/login`, {
       method: "POST",
@@ -49,16 +57,16 @@ document.querySelector(".form").addEventListener("submit", async (form) => {
 
     const data = await response.json();
 
-    if (response.ok && data.message === "Login Successful") {
-      window.location.href = "/frontend/index.html";
+    if (!response.ok) {
+      throw new Error(data.message || `Server Error: ${response.status}`);
+    }
+
+    if (response.status === 200) {
+      window.location.href = `/frontend/index.html?msg=${encodeURIComponent(data.message)}`;
     } else {
-      alert(data.message || "Login failed");
+      throw new Error("Something went Wrong. Could not Login User");
     }
   } catch (err) {
-    alert(
-      err.name === "TypeError"
-        ? "Cannot reach the server. Is the backend running on port 4000?"
-        : err.message,
-    );
+    alert("Error: " + (error.message || "Request failed"));
   }
 });

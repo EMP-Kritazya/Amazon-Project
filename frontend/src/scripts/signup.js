@@ -24,6 +24,10 @@ document.querySelector(".form").addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
   const userData = { username, email, password };
 
+  const submitBtn = document.querySelector('button[type="submit"]');
+
+  if (submitBtn) submitBtn.disabled = true;
+
   try {
     const response = await fetch(`/auth/signup`, {
       method: "POST",
@@ -36,21 +40,19 @@ document.querySelector(".form").addEventListener("submit", async (e) => {
 
     const data = await response.json();
 
-    if (response.ok) {
-      if (data.message == "User Registered") {
-        window.location.href = "/frontend/login.html";
-      } else {
-        throw new Error("Something went Wrong");
-      }
+    // If server returns 4xx or 5xx status code
+    if (!response.ok) {
+      throw new Error(data.message || `Server error: ${response.status}`);
+    }
+
+    if (response.status === 201) {
+      window.location.href = `/frontend/login.html?msg=${encodeURIComponent(data.message)}`;
     } else {
-      alert("Error: " + (data.message || "Request failed"));
+      throw new Error("Something went Wrong. Could not Complete Registration");
     }
   } catch (error) {
-    console.log("Network error: ", error);
-    alert(
-      "Error: " +
-        (error.message ||
-          "Request failed — check that the backend is running on port 4000."),
-    );
+    alert("Error: " + (error.message || "Request failed"));
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
   }
 });
