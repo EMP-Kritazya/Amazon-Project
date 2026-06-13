@@ -152,7 +152,7 @@ export async function renderItemsSummary() {
 
       const cartQuantity = await calculateCartQuantity();
       // updateTotal();
-      await renderOrderSummary();
+      // await renderOrderSummary();
     });
   });
 
@@ -186,7 +186,7 @@ export async function renderItemsSummary() {
       // Create UPDATE REQUEST
       // updateCart(productId, newQuantity);
 
-      await renderOrderSummary();
+      // await renderOrderSummary();
       await renderItemsSummary();
     });
   });
@@ -199,7 +199,7 @@ export async function renderItemsSummary() {
       // Updates the deliveryId for cart using POST
       updateDeliveryOptions(productId, deliveryOptionId);
       await renderItemsSummary();
-      await renderOrderSummary();
+      // await renderOrderSummary();
     });
   });
 

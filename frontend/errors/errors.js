@@ -5,6 +5,7 @@ const Errors = Object.freeze({
 });
 
 export function findErrors(message) {
+  console.log(message);
   const entry = Object.entries(Errors).find(
     ([key, value]) => value === message,
   );

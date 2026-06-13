@@ -21,13 +21,15 @@ async function initializeCheckout() {
     ]);
 
     await loadProductsFetch();
+    console.log("Don1");
     await renderItemsSummary();
+    console.log("Don2");
     await renderOrderSummary();
+    console.log("Don3");
   } catch (error) {
     const status = findErrors(error.message);
-    console.error(error.cause);
     showAlert(status);
-    initializeCheckout();
+    // initializeCheckout();
   }
 }
 
